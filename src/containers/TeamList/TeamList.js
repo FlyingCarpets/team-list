@@ -38,7 +38,7 @@ class TeamList extends Component {
 
     handleSearch(e) {
         const searchPhrase = e.target.value.trim();
-        const startFilterAt = 0;
+        const startFilterAt = 2;
 
         if (searchPhrase.length > startFilterAt) {
             this.onListToFilter(searchPhrase);
@@ -71,9 +71,10 @@ class TeamList extends Component {
     filterResults(phrase, teamList) {
         let team = [];
 
-        this.setState({
-            filterApplied: true,
-        });
+        // TODO: enable seearch and radion button filtering work together
+        // this.setState({
+        //     filterApplied: true,
+        // });
 
         teamList.map(item => {
             Object.values(item).reduce((obj, value) => {
