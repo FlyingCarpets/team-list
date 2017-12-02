@@ -4,7 +4,11 @@ class MemberBlock extends Component {
     render() {
         return (
             <div>
-                <img src={ this.props.image } alt={ this.props.name } />
+                <img
+                    src={ this.props.image }
+                    alt={ this.props.name }
+                    className="img-responsive"
+                />
                 <div>{ this.props.name }</div>
                 <div>{ this.props.department }</div>
             </div>

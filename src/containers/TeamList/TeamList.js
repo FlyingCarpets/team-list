@@ -17,6 +17,7 @@ class TeamList extends Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.getTeamList = this.getTeamList.bind(this);
         this.renderRadioChoices = this.renderRadioChoices.bind(this);
+        this.onClearFilter = this.onClearFilter.bind(this);
         this.filterByChoice = this.filterByChoice.bind(this);
     }
 
@@ -25,7 +26,7 @@ class TeamList extends Component {
     }
 
     fetchTeamMembers() {
-        axios.get('http://www.json-generator.com/api/json/get/cfPvRvzUCW?indent=2')
+        axios.get('http://www.json-generator.com/api/json/get/cecBNngIbS?indent=2')
             .then(response => {
                 this.setState({
                     teamMembers: this.state.teamMembers.concat(response.data.team)
@@ -44,44 +45,41 @@ class TeamList extends Component {
             this.onListToFilter(searchPhrase);
         } else {
             this.setState({
-                filteredResults: []
-            })
+                filteredResults: [],
+                filterApplied: false,
+            });
         }
     }
 
     filterByChoice(e) {
         const filterChoice = e.target.value.toLowerCase();
 
-        this.filterResults(filterChoice, this.state.teamMembers);
+        this.filterResults(filterChoice, 'department');
+
+        // this.setState({
+        //     filterApplied: true,
+        // })
     }
 
     onListToFilter(phrase) {
+        this.filterResults(phrase.replace( / +/g, ' ' ), 'name');
+    }
+
+    filterResults(phrase, filterBy) {
         const {
             teamMembers,
             filteredResults,
         } = this.state;
 
-        if (!this.state.filterApplied) {
-            this.filterResults(phrase.replace( / +/g, ' ' ), teamMembers);
-        } else {
-            this.filterResults(phrase.replace( / +/g, ' ' ), filteredResults);
-        }
-    }
-
-    filterResults(phrase, teamList) {
         let team = [];
-
-        // TODO: enable seearch and radion button filtering work together
-        // this.setState({
-        //     filterApplied: true,
-        // });
+        const teamList = filteredResults.length
+            ? filteredResults
+            : teamMembers;
 
         teamList.map(item => {
-            Object.values(item).reduce((obj, value) => {
-                if (value.toLowerCase().includes(phrase)) {
-                    team.push(item)
-                }
-            }, {})
+             if (item[filterBy].toLowerCase().includes(phrase)) {
+                team.push(item);
+            }
         });
 
         this.setState({
@@ -94,10 +92,14 @@ class TeamList extends Component {
             teamMembers,
         } = this.state;
 
+        const radioChoices = Array.from(
+            new Set(teamMembers.map(({ department }) => department))
+        );
+
         return (
             <div>
                 <div>Filter by department:</div>
-                { teamMembers.map(({ department }) =>
+                { radioChoices.map(department =>
                     <div className="radio" key={ department } >
                         <label>
                             <input
@@ -111,7 +113,22 @@ class TeamList extends Component {
                     </div>
                 )}
             </div>
-        )
+        );
+    }
+
+    onClearFilter() {
+        const {
+            filterApplied,
+        } = this.state;
+
+        // if (filterApplied) {
+
+            this.setState({
+                filteredResults: [],
+                filterApplied: false,
+            });
+
+        // }
     }
 
     getTeamList() {
@@ -136,6 +153,14 @@ class TeamList extends Component {
                     <input type="text" placeholder="Type name" onChange={ this.handleSearch } />
 
                     { this.renderRadioChoices() }
+
+                    <button
+                        type="text"
+                        className="btn btn-default"
+                        onClick={ this.onClearFilter }
+                    >
+                        Clear filter
+                    </button>
 
                     <div className="row">
                         { this.getTeamList().map(item => {
