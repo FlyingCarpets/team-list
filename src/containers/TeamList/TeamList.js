@@ -70,13 +70,17 @@ class TeamList extends Component {
             teamMembers,
             filteredResults,
             filteredByCategory,
+            searchPhrase,
         } = this.state;
 
-        const teamList = filteredResults.length && filteredByCategory.length
-            ? filteredResults
-            : teamMembers;
-
         let team = [];
+        let teamList;
+
+        if ((searchPhrase.length && filterBy === 'department') || (filteredByCategory && filterBy === 'name')) {
+            teamList = filteredResults
+        } else {
+            teamList = teamMembers
+        }
 
         teamList.map(item => {
             if (item[filterBy].toLowerCase().includes(phrase)) {
