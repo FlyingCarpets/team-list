@@ -11,14 +11,15 @@ class TeamList extends Component {
         this.state = {
             teamMembers: [],
             filteredResults: [],
-            filterApplied: false,
+            filteredByCategory: '',
+            searchPhrase: '',
         };
 
         this.handleSearch = this.handleSearch.bind(this);
         this.getTeamList = this.getTeamList.bind(this);
         this.renderRadioChoices = this.renderRadioChoices.bind(this);
         this.onClearFilter = this.onClearFilter.bind(this);
-        this.filterByChoice = this.filterByChoice.bind(this);
+        this.handleFilterByChoice = this.handleFilterByChoice.bind(this);
     }
 
     componentWillMount() {
@@ -26,7 +27,8 @@ class TeamList extends Component {
     }
 
     fetchTeamMembers() {
-        axios.get('http://www.json-generator.com/api/json/get/cecBNngIbS?indent=2')
+        // axios.get('http://www.json-generator.com/api/json/get/cecBNngIbS?indent=2')
+        axios.get('http://www.json-generator.com/api/json/get/ceguUtQmWa?indent=2')
             .then(response => {
                 this.setState({
                     teamMembers: this.state.teamMembers.concat(response.data.team)
@@ -39,45 +41,45 @@ class TeamList extends Component {
 
     handleSearch(e) {
         const searchPhrase = e.target.value.trim();
-        const startFilterAt = 2;
 
-        if (searchPhrase.length > startFilterAt) {
-            this.onListToFilter(searchPhrase);
-        } else {
+        this.setState({
+            searchPhrase
+        });
+
+        if ((searchPhrase.length < this.state.searchPhrase.length) && searchPhrase.length < 3) {
             this.setState({
                 filteredResults: [],
-                filterApplied: false,
             });
+        } else {
+            this.filterResults(searchPhrase.replace( / +/g, ' ' ), 'name');
         }
     }
 
-    filterByChoice(e) {
+    handleFilterByChoice(e) {
         const filterChoice = e.target.value.toLowerCase();
 
+        this.setState({
+            filteredByCategory: filterChoice,
+        });
+
         this.filterResults(filterChoice, 'department');
-
-        // this.setState({
-        //     filterApplied: true,
-        // })
-    }
-
-    onListToFilter(phrase) {
-        this.filterResults(phrase.replace( / +/g, ' ' ), 'name');
     }
 
     filterResults(phrase, filterBy) {
         const {
             teamMembers,
             filteredResults,
+            filteredByCategory,
         } = this.state;
 
-        let team = [];
-        const teamList = filteredResults.length
+        const teamList = filteredResults.length && filteredByCategory.length
             ? filteredResults
             : teamMembers;
 
+        let team = [];
+
         teamList.map(item => {
-             if (item[filterBy].toLowerCase().includes(phrase)) {
+            if (item[filterBy].toLowerCase().includes(phrase)) {
                 team.push(item);
             }
         });
@@ -87,48 +89,12 @@ class TeamList extends Component {
         })
     }
 
-    renderRadioChoices() {
-        const {
-            teamMembers,
-        } = this.state;
-
-        const radioChoices = Array.from(
-            new Set(teamMembers.map(({ department }) => department))
-        );
-
-        return (
-            <div>
-                <div>Filter by department:</div>
-                { radioChoices.map(department =>
-                    <div className="radio" key={ department } >
-                        <label>
-                            <input
-                                onClick={ this.filterByChoice }
-                                value={ department }
-                                type="radio"
-                                name="radioChoices"
-                            />
-                            { department }
-                        </label>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
     onClearFilter() {
-        const {
-            filterApplied,
-        } = this.state;
-
-        // if (filterApplied) {
-
-            this.setState({
-                filteredResults: [],
-                filterApplied: false,
-            });
-
-        // }
+        this.setState({
+            filteredResults: [],
+            filteredByCategory: '',
+            searchPhrase: '',
+        });
     }
 
     getTeamList() {
@@ -144,13 +110,53 @@ class TeamList extends Component {
         return filteredResults;
     }
 
+    renderRadioChoices() {
+        const {
+            teamMembers,
+            filteredByCategory,
+        } = this.state;
+
+        const radioChoices = Array.from(
+            new Set(teamMembers.map(({ department }) => department))
+        );
+
+        return (
+            <div>
+                <div>Filter by department:</div>
+                { radioChoices.map(department =>
+                    <div className="radio" key={ department } >
+                        <label>
+                            <input
+                                onChange={ this.handleFilterByChoice }
+                                value={ department }
+                                checked={ filteredByCategory === department.toLowerCase() }
+                                type="radio"
+                                name="radioChoices"
+                            />
+                            { department }
+                        </label>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     render() {
+        const {
+            searchPhrase,
+        } = this.state;
+
         return (
             <div className="container">
                 <div className="team-list">
                     <Heading heading="Team"/>
                     <div>Search by name:</div>
-                    <input type="text" placeholder="Type name" onChange={ this.handleSearch } />
+                    <input
+                        onChange={ this.handleSearch }
+                        value={ searchPhrase }
+                        type="text"
+                        placeholder="Type name"
+                    />
 
                     { this.renderRadioChoices() }
 
