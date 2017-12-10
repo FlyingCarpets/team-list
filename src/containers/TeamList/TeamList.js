@@ -78,16 +78,17 @@ class TeamList extends Component {
             searchPhrase,
         } =this.state;
 
-        if (filterByType.length === 1 && filterByType[0] === 'department') {
-            return teamMembers.filter(member => member.department.toLowerCase() === filterByCategory);
-        } else if (filterByType.length === 1 && searchPhrase.length) {
-            return teamMembers.filter(member => member.name.toLowerCase().includes(searchPhrase));
-        } else if (filterByType.length === 2) {
-            return teamMembers
-                .filter(member => member.department.toLowerCase() === filterByCategory)
-                .filter(member => member.name.toLowerCase().includes(searchPhrase));
-        } else {
-            return teamMembers;
+        switch (filterByType.length) {
+            case(1):
+                return teamMembers
+                    .filter(member => member[filterByType]
+                        .toLowerCase()
+                        .includes(searchPhrase.length ? searchPhrase : filterByCategory));
+            case(2):
+                return teamMembers
+                    .filter(member => member.department.toLowerCase() === filterByCategory)
+                    .filter(member => member.name.toLowerCase().includes(searchPhrase));
+            default: return teamMembers;
         }
     }
 
