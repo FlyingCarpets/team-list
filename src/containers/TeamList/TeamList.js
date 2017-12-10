@@ -10,19 +10,18 @@ class TeamList extends Component {
 
         this.state = {
             teamMembers: [],
-            filteredResults: [],
-            filteredByCategory: '',
+            filterByType: [],
+            filterByCategory: '',
             searchPhrase: '',
-            noResults: false,
         };
 
-        this.handleSearch = this.handleSearch.bind(this);
         this.getTeamList = this.getTeamList.bind(this);
+        this.handleCategorySearch = this.handleCategorySearch.bind(this);
+        this.handleKeywordSearch = this.handleKeywordSearch.bind(this);
+        this.clearCategories = this.clearCategories.bind(this);
+        this.clearAllFilters = this.clearAllFilters.bind(this);
         this.renderRadioChoices = this.renderRadioChoices.bind(this);
-        this.renderNoResults = this.renderNoResults.bind(this);
         this.renderTeamList = this.renderTeamList.bind(this);
-        this.onClearFilter = this.onClearFilter.bind(this);
-        this.handleFilterByChoice = this.handleFilterByChoice.bind(this);
     }
 
     componentDidMount() {
@@ -41,109 +40,93 @@ class TeamList extends Component {
             });
     }
 
-    handleSearch(e) {
-        const searchPhrase = e.target.value.trim();
+    handleCategorySearch(e) {
+        let filters = this.state.filterByType;
 
-        this.setState({
-            searchPhrase
-        });
-
-        if ((searchPhrase.length < this.state.searchPhrase.length) && searchPhrase.length < 3 && !this.state.filteredByCategory.length) {
-            this.setState({
-                filteredResults: [],
-                noResults: false,
-            });
-        } else {
-            this.filterResults(searchPhrase.replace( / +/g, ' ' ), 'name');
-        }
-    }
-
-    handleFilterByChoice(e) {
-        const filterChoice = e.target.value.toLowerCase();
-
-        this.setState({
-            filteredByCategory: filterChoice,
-        });
-
-        this.filterResults(filterChoice, 'department');
-    }
-
-    filterResults(phrase, filterBy) {
-        const {
-            teamMembers,
-            filteredResults,
-            filteredByCategory,
-            searchPhrase,
-        } = this.state;
-
-        let team = [];
-        let teamList;
-
-        if ((searchPhrase.length && filterBy === 'department') || (filteredByCategory && filterBy === 'name')) {
-            teamList = filteredResults
-        } else {
-            teamList = teamMembers
+        if (!filters.includes('department')) {
+            filters.push('department');
         }
 
-        teamList.map(item => {
-            if (item[filterBy].toLowerCase().includes(phrase)) {
-                team.push(item);
-            }
+        this.setState({
+            filterByCategory: e.target.value.toLowerCase(),
+            filterByType: filters,
         });
-
-        if (team.length > 0) {
-            this.setState({
-                filteredResults: team,
-                noResults: false,
-            })
-        } else {
-            this.setState({
-                noResults: true,
-            });
-        }
     }
 
-    onClearFilter() {
+    handleKeywordSearch(e) {
+        let filters = this.state.filterByType;
+
+        if (!filters.includes('name')) {
+            filters.push('name');
+        }
+
+        if (e.target.value === 0) {
+            filters = filters.filter(value => value !== 'name');
+        }
+
         this.setState({
-            filteredResults: [],
-            filteredByCategory: '',
-            searchPhrase: '',
+            searchPhrase: e.target.value.toLowerCase(),
+            filterByType: filters,
         });
     }
 
     getTeamList() {
         const {
+            filterByType,
+            filterByCategory,
             teamMembers,
-            filteredResults,
-        } = this.state;
+            searchPhrase,
+        } =this.state;
 
-        if (filteredResults.length === 0) {
+        if (filterByType.length === 1 && filterByType[0] === 'department') {
+            return teamMembers.filter(member => member.department.toLowerCase() === filterByCategory);
+        } else if (filterByType.length === 1 && searchPhrase.length) {
+            return teamMembers.filter(member => member.name.toLowerCase().includes(searchPhrase));
+        } else if (filterByType.length === 2) {
+            return teamMembers
+                .filter(member => member.department.toLowerCase() === filterByCategory)
+                .filter(member => member.name.toLowerCase().includes(searchPhrase));
+        } else {
             return teamMembers;
         }
-
-        return filteredResults;
     }
 
-    renderNoResults() {
-        return (
-            <div>Nothing found</div>
-        );
+    clearCategories() {
+        let filterTypes = this.state.filterByType;
+        filterTypes = filterTypes.filter(item => item !== 'department');
+
+        this.setState({
+            filterByType: filterTypes,
+            filterByCategory: '',
+        });
+    }
+
+    clearAllFilters() {
+        this.setState({
+            filterByType: [],
+            filterByCategory: '',
+            searchPhrase: '',
+        });
     }
 
     renderTeamList() {
         return (
             <div className="row">
-                { this.getTeamList().map(item => {
-                    return (
-                        <div className="col-sm-3" key={ item.name }>
-                            <MemberBlock
-                                name={ item.name }
-                                department={ item.department }
-                                image={ item.image }
-                            />
-                        </div>
-                    )
-                })}
+                { this.getTeamList().length
+                    ?
+                    this.getTeamList().map(member => {
+                        return (
+                            <div className="col-sm-3" key={ member.name }>
+                                <MemberBlock
+                                    name={ member.name }
+                                    department={ member.department }
+                                    image={ member.image }
+                                />
+                            </div>
+                        )
+                    })
+                    : <strong>No results</strong>
+                }
             </div>
         )
     }
@@ -151,7 +134,7 @@ class TeamList extends Component {
     renderRadioChoices() {
         const {
             teamMembers,
-            filteredByCategory,
+            filterByCategory,
         } = this.state;
 
         const radioChoices = Array.from(
@@ -165,9 +148,9 @@ class TeamList extends Component {
                     <div className="radio" key={ department } >
                         <label>
                             <input
-                                onChange={ this.handleFilterByChoice }
+                                onChange={ this.handleCategorySearch }
                                 value={ department }
-                                checked={ filteredByCategory === department.toLowerCase() }
+                                checked={ filterByCategory === department.toLowerCase() }
                                 type="radio"
                                 name="radioChoices"
                             />
@@ -175,6 +158,16 @@ class TeamList extends Component {
                         </label>
                     </div>
                 )}
+                <div className="radio">
+                    <label>
+                        <input
+                            onChange={ this.clearCategories }
+                            type="radio"
+                            checked={ !filterByCategory.length }
+                        />
+                        All
+                    </label>
+                </div>
             </div>
         );
     }
@@ -182,7 +175,6 @@ class TeamList extends Component {
     render() {
         const {
             searchPhrase,
-            noResults,
         } = this.state;
 
         return (
@@ -193,7 +185,7 @@ class TeamList extends Component {
 
                     <div>Search by name:</div>
                     <input
-                        onChange={ this.handleSearch }
+                        onChange={ this.handleKeywordSearch }
                         value={ searchPhrase }
                         type="text"
                         placeholder="Type name"
@@ -204,15 +196,13 @@ class TeamList extends Component {
                     <button
                         type="text"
                         className="btn btn-default"
-                        onClick={ this.onClearFilter }
+                        onClick={ this.clearAllFilters }
                     >
-                        Clear filter
+                        Clear all filters
                     </button>
 
-                    { noResults
-                        ? this.renderNoResults()
-                        : this.renderTeamList()
-                    }
+                    { this.renderTeamList() }
+
                 </div>
             </div>
         )
