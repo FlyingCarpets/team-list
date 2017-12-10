@@ -13,21 +13,23 @@ class TeamList extends Component {
             filteredResults: [],
             filteredByCategory: '',
             searchPhrase: '',
+            noResults: false,
         };
 
         this.handleSearch = this.handleSearch.bind(this);
         this.getTeamList = this.getTeamList.bind(this);
         this.renderRadioChoices = this.renderRadioChoices.bind(this);
+        this.renderNoResults = this.renderNoResults.bind(this);
+        this.renderTeamList = this.renderTeamList.bind(this);
         this.onClearFilter = this.onClearFilter.bind(this);
         this.handleFilterByChoice = this.handleFilterByChoice.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchTeamMembers();
     }
 
     fetchTeamMembers() {
-        // axios.get('http://www.json-generator.com/api/json/get/cecBNngIbS?indent=2')
         axios.get('http://www.json-generator.com/api/json/get/ceguUtQmWa?indent=2')
             .then(response => {
                 this.setState({
@@ -46,9 +48,10 @@ class TeamList extends Component {
             searchPhrase
         });
 
-        if ((searchPhrase.length < this.state.searchPhrase.length) && searchPhrase.length < 3) {
+        if ((searchPhrase.length < this.state.searchPhrase.length) && searchPhrase.length < 3 && !this.state.filteredByCategory.length) {
             this.setState({
                 filteredResults: [],
+                noResults: false,
             });
         } else {
             this.filterResults(searchPhrase.replace( / +/g, ' ' ), 'name');
@@ -88,9 +91,16 @@ class TeamList extends Component {
             }
         });
 
-        this.setState({
-            filteredResults: team,
-        })
+        if (team.length > 0) {
+            this.setState({
+                filteredResults: team,
+                noResults: false,
+            })
+        } else {
+            this.setState({
+                noResults: true,
+            });
+        }
     }
 
     onClearFilter() {
@@ -112,6 +122,30 @@ class TeamList extends Component {
         }
 
         return filteredResults;
+    }
+
+    renderNoResults() {
+        return (
+            <div>Nothing found</div>
+        );
+    }
+
+    renderTeamList() {
+        return (
+            <div className="row">
+                { this.getTeamList().map(item => {
+                    return (
+                        <div className="col-sm-3" key={ item.name }>
+                            <MemberBlock
+                                name={ item.name }
+                                department={ item.department }
+                                image={ item.image }
+                            />
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 
     renderRadioChoices() {
@@ -148,12 +182,15 @@ class TeamList extends Component {
     render() {
         const {
             searchPhrase,
+            noResults,
         } = this.state;
 
         return (
             <div className="container">
                 <div className="team-list">
+
                     <Heading heading="Team"/>
+
                     <div>Search by name:</div>
                     <input
                         onChange={ this.handleSearch }
@@ -172,19 +209,10 @@ class TeamList extends Component {
                         Clear filter
                     </button>
 
-                    <div className="row">
-                        { this.getTeamList().map(item => {
-                            return (
-                                <div className="col-sm-3" key={ item.name }>
-                                    <MemberBlock
-                                        name={ item.name }
-                                        department={ item.department }
-                                        image={ item.image }
-                                    />
-                                </div>
-                            )
-                        })}
-                    </div>
+                    { noResults
+                        ? this.renderNoResults()
+                        : this.renderTeamList()
+                    }
                 </div>
             </div>
         )
