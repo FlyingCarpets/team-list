@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Heading from '../../components/Heading/Heading';
 import MemberBlock from '../../components/MemberBlock/MemberBlock';
+import RadioButton from '../../components/RadioButton/RadioButton';
 
 class TeamList extends Component {
     constructor(props) {
@@ -40,7 +41,7 @@ class TeamList extends Component {
             });
     }
 
-    handleCategorySearch(e) {
+    handleCategorySearch(value) {
         let filters = this.state.filterByType;
 
         if (!filters.includes('department')) {
@@ -48,7 +49,7 @@ class TeamList extends Component {
         }
 
         this.setState({
-            filterByCategory: e.target.value.toLowerCase(),
+            filterByCategory: value.toLowerCase(),
             filterByType: filters,
         });
     }
@@ -145,29 +146,21 @@ class TeamList extends Component {
         return (
             <div>
                 <div>Filter by department:</div>
-                { radioChoices.map(department =>
-                    <div className="radio" key={ department } >
-                        <label>
-                            <input
-                                onChange={ this.handleCategorySearch }
-                                value={ department }
-                                checked={ filterByCategory === department.toLowerCase() }
-                                type="radio"
-                                name="radioChoices"
-                            />
-                            { department }
-                        </label>
-                    </div>
-                )}
-                <div className="radio">
-                    <label>
-                        <input
-                            onChange={ this.clearCategories }
-                            type="radio"
-                            checked={ !filterByCategory.length }
+                <div>
+                    { radioChoices.map(department =>
+                        <RadioButton
+                            label={ department }
+                            value={ department }
+                            onSelect={ this.handleCategorySearch }
+                            checked={ filterByCategory === department.toLowerCase() }
+                            key={ department }
                         />
-                        All
-                    </label>
+                    )}
+                    <RadioButton
+                        onSelect={ this.clearCategories }
+                        checked={ !filterByCategory.length }
+                        label="All"
+                    />
                 </div>
             </div>
         );
