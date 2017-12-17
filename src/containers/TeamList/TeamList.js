@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import Heading from '../../components/Heading/Heading';
+import SearchControls from '../SearchControls/SearchControls';
 import MemberBlock from '../../components/MemberBlock/MemberBlock';
-import RadioButton from '../../components/RadioButton/RadioButton';
 
 class TeamList extends Component {
     constructor(props) {
@@ -21,7 +21,6 @@ class TeamList extends Component {
         this.handleKeywordSearch = this.handleKeywordSearch.bind(this);
         this.clearCategories = this.clearCategories.bind(this);
         this.clearAllFilters = this.clearAllFilters.bind(this);
-        this.renderRadioChoices = this.renderRadioChoices.bind(this);
         this.renderTeamList = this.renderTeamList.bind(this);
     }
 
@@ -133,42 +132,11 @@ class TeamList extends Component {
         )
     }
 
-    renderRadioChoices() {
-        const {
-            teamMembers,
-            filterByCategory,
-        } = this.state;
-
-        const radioChoices = Array.from(
-            new Set(teamMembers.map(({ department }) => department))
-        );
-
-        return (
-            <div>
-                <div>Filter by department:</div>
-                <div>
-                    { radioChoices.map(department =>
-                        <RadioButton
-                            label={ department }
-                            value={ department }
-                            onSelect={ this.handleCategorySearch }
-                            checked={ filterByCategory === department.toLowerCase() }
-                            key={ department }
-                        />
-                    )}
-                    <RadioButton
-                        onSelect={ this.clearCategories }
-                        checked={ !filterByCategory.length }
-                        label="All"
-                    />
-                </div>
-            </div>
-        );
-    }
-
     render() {
         const {
             searchPhrase,
+            teamMembers,
+            filterByCategory,
         } = this.state;
 
         return (
@@ -177,23 +145,15 @@ class TeamList extends Component {
 
                     <Heading heading="Team"/>
 
-                    <div>Search by name:</div>
-                    <input
-                        onChange={ this.handleKeywordSearch }
-                        value={ searchPhrase }
-                        type="text"
-                        placeholder="Type name"
+                    <SearchControls
+                        searchPhrase={ searchPhrase }
+                        teamMembers={ teamMembers }
+                        filterByCategory={ filterByCategory }
+                        handleCategorySearch={ this.handleCategorySearch }
+                        onClearCategories={ this.clearCategories }
+                        handleKeywordSearch={ this.handleKeywordSearch }
+                        clearAllFilters={ this.clearAllFilters }
                     />
-
-                    { this.renderRadioChoices() }
-
-                    <button
-                        type="text"
-                        className="btn btn-default"
-                        onClick={ this.clearAllFilters }
-                    >
-                        Clear all filters
-                    </button>
 
                     { this.renderTeamList() }
 
