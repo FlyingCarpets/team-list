@@ -1,27 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class MemberBlock extends Component {
-    render() {
-        const {
-            image,
-            name,
-            department,
-        } = this.props;
-
-        return (
-            <div>
-                <img
-                    src={ image }
-                    alt={ name }
-                    className="img-responsive"
-                />
-                <div>{ name }</div>
-                <div>{ department }</div>
-            </div>
-        );
-    }
-}
+const MemberBlock = ({ image, name, department }) => (
+    <div>
+        <img
+            src={ image }
+            alt={ name }
+            className="img-responsive"
+        />
+        <div>{ name }</div>
+        <div>{ department }</div>
+    </div>
+);
 
 MemberBlock.propTypes = {
     image: PropTypes.string,
