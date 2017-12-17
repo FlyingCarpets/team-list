@@ -32,8 +32,8 @@ class TeamList extends Component {
         axios.get('http://www.json-generator.com/api/json/get/ceguUtQmWa?indent=2')
             .then(response => {
                 this.setState({
-                    teamMembers: this.state.teamMembers.concat(response.data.team)
-                })
+                    teamMembers: this.state.teamMembers.concat(response.data.team),
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -41,7 +41,7 @@ class TeamList extends Component {
     }
 
     handleCategorySearch(value) {
-        let filters = this.state.filterByType;
+        const filters = this.state.filterByType;
 
         if (!filters.includes('department')) {
             filters.push('department');
@@ -76,15 +76,15 @@ class TeamList extends Component {
             filterByCategory,
             teamMembers,
             searchPhrase,
-        } =this.state;
+        } = this.state;
 
         switch (filterByType.length) {
-            case(1):
+            case (1):
                 return teamMembers
                     .filter(member => member[filterByType]
                         .toLowerCase()
                         .includes(searchPhrase.length ? searchPhrase : filterByCategory));
-            case(2):
+            case (2):
                 return teamMembers
                     .filter(member => member.department.toLowerCase() === filterByCategory)
                     .filter(member => member.name.toLowerCase().includes(searchPhrase));
@@ -124,12 +124,12 @@ class TeamList extends Component {
                                     image={ member.image }
                                 />
                             </div>
-                        )
+                        );
                     })
                     : <strong>No results</strong>
                 }
             </div>
-        )
+        );
     }
 
     render() {
@@ -143,7 +143,7 @@ class TeamList extends Component {
             <div className="container">
                 <div className="team-list">
 
-                    <Heading heading="Team"/>
+                    <Heading heading="Team" />
 
                     <SearchControls
                         searchPhrase={ searchPhrase }
@@ -159,7 +159,7 @@ class TeamList extends Component {
 
                 </div>
             </div>
-        )
+        );
     }
 }
 

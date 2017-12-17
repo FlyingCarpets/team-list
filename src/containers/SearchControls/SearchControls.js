@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import RadioButton from '../../components/RadioButton/RadioButton';
 
@@ -26,7 +27,7 @@ class SearchControls extends Component {
         } = this.props;
 
         const radioChoices = Array.from(
-            new Set(teamMembers.map(({ department }) => department))
+            new Set(teamMembers.map(({ department }) => department)),
         );
 
         return (
@@ -40,7 +41,7 @@ class SearchControls extends Component {
                             onSelect={ this.onCategorySearch }
                             checked={ filterByCategory === department.toLowerCase() }
                             key={ department }
-                        />
+                        />,
                     )}
                     <RadioButton
                         onSelect={ onClearCategories }
@@ -82,5 +83,15 @@ class SearchControls extends Component {
         );
     }
 }
+
+SearchControls.propTypes = {
+    handleCategorySearch: PropTypes.func,
+    teamMembers: PropTypes.array,
+    filterByCategory: PropTypes.string,
+    onClearCategories: PropTypes.func,
+    searchPhrase: PropTypes.string,
+    handleKeywordSearch: PropTypes.func,
+    clearAllFilters: PropTypes.func,
+};
 
 export default SearchControls;

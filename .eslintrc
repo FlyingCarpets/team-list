@@ -1,0 +1,41 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "indent": [2, 4, { "SwitchCase": 1 }],
+    "react/jsx-indent-props": [2, 4],
+    "react/jsx-indent": [2, 4],
+    "react/prefer-es6-class": 0,
+    "padded-blocks": 0,
+    "guard-for-in": 1,
+    "react/prop-types": 1,
+    "max-len": 1,
+    "no-use-before-define": [2, "nofunc"],
+    "no-trailing-spaces": 1,
+    "no-else-return": 0,
+    "spaced-comment": 0,
+    "dot-notation": 1,
+    "react/jsx-no-bind": 2,
+    "react/require-extension": 0,
+    "react/prefer-stateless-function": 0,
+    "react/sort-comp": [
+      1,
+      {
+        "order": [
+          "static-methods",
+          "lifecycle",
+          "everything-else",
+          "render"
+        ]
+      }
+    ],
+    "react/jsx-curly-spacing": [
+      2, "always", { "allowMultiline": true, "spacing": { "objectLiterals": "always" } }
+    ],
+    "react/jsx-filename-extension": 0,
+    "react/require-default-props": 0,
+    "react/forbid-prop-types": 0,
+    "react/jsx-wrap-multilines": 0,
+    "function-paren-newline": 0,
+    "arrow-parens": [2, "as-needed"]
+  }
+}
