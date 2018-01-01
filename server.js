@@ -7,4 +7,6 @@ app.get('/api/hello', (req, res) => {
     res.send({ express: 'Hello From Express' });
 });
 
+app.set('etag', false);
+
 app.listen(port, () => console.log(`Listening on port ${port}`));

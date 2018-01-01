@@ -26,6 +26,7 @@ class TeamList extends Component {
 
     componentDidMount() {
         this.fetchTeamMembers();
+        // TODO: remove
         axios.get('/api/hello')
             .then(response => {
                 console.log(response);
