@@ -26,6 +26,13 @@ class TeamList extends Component {
 
     componentDidMount() {
         this.fetchTeamMembers();
+        axios.get('/api/hello')
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     fetchTeamMembers() {
