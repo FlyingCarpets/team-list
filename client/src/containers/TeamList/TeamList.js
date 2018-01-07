@@ -27,20 +27,30 @@ class TeamList extends Component {
     componentDidMount() {
         this.fetchTeamMembers();
         // TODO: remove
-        axios.get('/api/dogs')
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        // axios.get('/api/dogs')
+        //     .then(response => {
+        //         console.log(response);
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
+
+        //    TODO:remove
+        // axios.put('api/dogs/1?height=updatedHeight')
+        //     .then(response => {
+        //         console.log(response);
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
     }
 
     fetchTeamMembers() {
-        axios.get('http://www.json-generator.com/api/json/get/ceguUtQmWa?indent=2')
+        axios.get('/api/team')
             .then(response => {
+                console.log(response);
                 this.setState({
-                    teamMembers: this.state.teamMembers.concat(response.data.team),
+                    teamMembers: this.state.teamMembers.concat(response.data),
                 });
             })
             .catch(error => {
@@ -130,6 +140,7 @@ class TeamList extends Component {
                                     name={ member.name }
                                     department={ member.department }
                                     image={ member.image }
+                                    link={ member.link }
                                 />
                             </div>
                         );
