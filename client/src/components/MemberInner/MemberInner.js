@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-class MemerInner extends Component {
+import PageNotFound from '../../containers/PageNotFound/PageNotFound';
+
+class MemberInner extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             member: {},
+            error: false,
         };
     }
 
@@ -25,8 +28,10 @@ class MemerInner extends Component {
                     member: data,
                 });
             })
-            .catch(error => {
-                console.log(error);
+            .catch(() => {
+                this.setState({
+                    error: true,
+                });
             })
     }
 
@@ -37,7 +42,12 @@ class MemerInner extends Component {
                 department,
                 image,
             },
+            error,
         } = this.state;
+
+        if (error) {
+            return <PageNotFound />
+        }
 
         return(
             <div className="row">
@@ -55,4 +65,4 @@ class MemerInner extends Component {
     }
 }
 
-export default MemerInner;
+export default MemberInner;

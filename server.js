@@ -52,35 +52,27 @@ app.get('/api/team', (req, res) => {
 });
 
 app.get('/api/member/:name', (req, res) => {
-    team.forEach(member => {
-        if (Object.values(member).includes(req.params.name)) {
-            res.send(member);
-        }
-    });
+    const teamFiltered = team.filter(member => member.link === req.params.name);
+
+    if (teamFiltered.length) {
+        res.send(teamFiltered[0]);
+    } else {
+        res.status(404).send({error: 'Member not found'});
+    }
 });
 
-//
-//get with route params test
-// app.get('/api/team/:id', (req, res) => {
+//update with route params + query TEST
+// app.put('/api/team/:id', (req, res) => {
 //     if (req.params.id in team) {
-//         res.send(team[req.params.id]);
+//         const dogUpdates = Object.assign(team[req.params.id], req.query);
+//         res.send(dogUpdates);
 //     } else {
 //         res.status(404).send('Breed not found');
 //     }
 // });
-//
-//update with route params + query test
-app.put('/api/team/:id', (req, res) => {
-    if (req.params.id in team) {
-        const dogUpdates = Object.assign(team[req.params.id], req.query);
-        res.send(dogUpdates);
-    } else {
-        res.status(404).send('Breed not found');
-    }
-});
-//
-//post new data test
-app.post('/api/team', (req, res) => {
-    const dogUpdates = Object.assign(team, req.query);
-    res.status(201).send(dogUpdates);
-});
+// //
+// //post new data TEST
+// app.post('/api/team', (req, res) => {
+//     const dogUpdates = Object.assign(team, req.query);
+//     res.status(201).send(dogUpdates);
+// });
