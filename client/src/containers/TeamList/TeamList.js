@@ -48,7 +48,6 @@ class TeamList extends Component {
     fetchTeamMembers() {
         axios.get('/api/team')
             .then(response => {
-                console.log(response);
                 this.setState({
                     teamMembers: this.state.teamMembers.concat(response.data),
                 });

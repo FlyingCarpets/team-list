@@ -1,16 +1,19 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const MemberBlock = ({ image, name, department, link }) => (
-    <a href={ `/${link}` }>
-        <img
-            src={ image }
-            alt={ name }
-            className="img-responsive"
-        />
-        <div>{ name }</div>
-        <div>{ department }</div>
-    </a>
+    <div>
+        <Link to={ `/member/${link}` }>
+            <img
+                src={ image }
+                alt={ name }
+                className="img-responsive"
+            />
+            <div>{ name }</div>
+            <div>{ department }</div>
+        </Link>
+    </div>
 );
 
 MemberBlock.propTypes = {

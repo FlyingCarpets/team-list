@@ -12,48 +12,51 @@ const team = [
     {
         "department": "FBI",
         "image": "https://thestudioexec.com/wp-content/uploads/2017/05/twindalecooper.jpg",
-        "name": "Dale Cooper"
+        "name": "Dale Cooper",
+        "link": "dale-cooper"
     },
     {
         "department": "Town of Twin Peaks",
         "image": "https://pmcvariety.files.wordpress.com/2015/09/twinpeaks_loglady.jpg?w=700&h=393&crop=1",
-        "name": "Log Lady"
+        "name": "Log Lady",
+        "link": "log-lady"
     },
     {
         "department": "Town of Twin Peaks",
         "image": "https://chicagoliterati.files.wordpress.com/2015/01/nadine.jpg?w=500",
-        "name": "Nadine Hurley"
+        "name": "Nadine Hurley",
+        "link": "nadine-hurley"
     },
     {
         "department": "US Air Force",
         "image": "https://vignette.wikia.nocookie.net/twinpeaks/images/f/f5/Garland_Briggs.png/revision/latest?cb=20161021155038",
-        "name": "Garland Briggs"
+        "name": "Garland Briggs",
+        "link": "garland-briggs"
     },
     {
         "department": "FBI",
         "image": "https://i.ytimg.com/vi/Ncj1GQkkbkE/maxresdefault.jpg",
-        "name": "Denise Bryson"
+        "name": "Denise Bryson",
+        "link": "denise-bryson"
     },
     {
         "department": "Test",
         "image": "http://via.placeholder.com/350x150",
-        "name": "Denise Test"
+        "name": "Denise Test",
+        "link": "denise-test"
     }
 ];
 
 app.get('/api/team', (req, res) => {
-    team.forEach(member => {
-        member.link = member.name.replace(/\s+/g, '-').toLowerCase();
-    });
     res.send(team);
 });
 
-app.get('/api/team/:name', (req, res) => {
-    if (req.params.name in team) {
-        res.send(team[req.params.name]);
-    } else {
-        res.status(404).send('Member not found');
-    }
+app.get('/api/member/:name', (req, res) => {
+    team.forEach(member => {
+        if (Object.values(member).includes(req.params.name)) {
+            res.send(member);
+        }
+    });
 });
 
 //
