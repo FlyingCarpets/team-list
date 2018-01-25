@@ -10,7 +10,12 @@ class MemberInner extends Component {
         this.state = {
             member: {},
             error: false,
+            editMode: false,
         };
+
+        this.handleEditMode = this.handleEditMode.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSaveUpdates = this.handleSaveUpdates.bind(this);
     }
 
     componentDidMount() {
@@ -35,14 +40,96 @@ class MemberInner extends Component {
             })
     }
 
-    render() {
+    handleEditMode() {
+        this.setState({
+            editMode: !this.state.editMode,
+        });
+    }
+
+    handleInputChange(e) {
+        this.setState({
+            member: {
+                ...this.state.member,
+                [e.target.name]: e.target.value,
+            }
+        });
+    }
+
+    handleSaveUpdates() {
+        const {
+            member: {
+                link,
+            },
+        } = this.state;
+
+        axios.put(`/api/member/${link}?name=aaa`)
+            .then(({ data }) => {
+                this.setState({
+                    member: data,
+                    editMode: false,
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    renderInputList() {
         const {
             member: {
                 name,
                 department,
+            },
+        } = this.state;
+
+        return (
+            <ul>
+                <li>
+                    <label>Name: </label>
+                    <input
+                        onChange={ this.handleInputChange }
+                        value={ name }
+                        name="name"
+                        type="text"
+                    />
+                </li>
+                <li>
+                    <label>Department: </label>
+                    <input
+                        onChange={ this.handleInputChange }
+                        value={ department }
+                        name="department"
+                        type="text"
+                    />
+                </li>
+            </ul>
+        )
+    }
+
+    renderPlainList() {
+        const {
+            member: {
+                name,
+                department,
+            },
+        } = this.state;
+
+        return (
+            <ul>
+                <li>Name: { name }</li>
+                <li>Department: { department }</li>
+            </ul>
+        )
+    }
+
+    render() {
+        const {
+            member: {
+                name,
                 image,
             },
             error,
+            editMode,
         } = this.state;
 
         if (error) {
@@ -55,10 +142,24 @@ class MemberInner extends Component {
                     <img src={ image } className="img-responsive" alt={ name }/>
                 </div>
                 <div className="col-sm-8">
-                    <ul>
-                        <li>Name: { name }</li>
-                        <li>Department: { department }</li>
-                    </ul>
+                    { editMode
+                        ? this.renderInputList()
+                        : this.renderPlainList()
+                    }
+
+                    <button
+                        onClick={ this.handleEditMode }
+                        type="button"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        onClick={ this.handleSaveUpdates }
+                        type="button"
+                    >
+                        Save
+                    </button>
                 </div>
             </div>
         )
