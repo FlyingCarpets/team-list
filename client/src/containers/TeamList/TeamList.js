@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Heading from '../../components/Heading/Heading';
 import SearchControls from '../SearchControls/SearchControls';
-import MemberBlock from '../../components/MemberBlock/MemberBlock';
+import MemberListItem from '../../components/MemberListItem/MemberListItem';
 
 class TeamList extends Component {
     constructor(props) {
@@ -25,27 +25,6 @@ class TeamList extends Component {
     }
 
     componentDidMount() {
-        this.fetchTeamMembers();
-        // TODO: remove
-        // axios.get('/api/dogs')
-        //     .then(response => {
-        //         console.log(response);
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     });
-
-        //    TODO:remove
-        // axios.put('api/dogs/1?height=updatedHeight')
-        //     .then(response => {
-        //         console.log(response);
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     });
-    }
-
-    fetchTeamMembers() {
         axios.get('/api/team')
             .then(response => {
                 this.setState({
@@ -55,6 +34,24 @@ class TeamList extends Component {
             .catch(error => {
                 console.log(error);
             });
+
+            // TODO: remove
+            // axios.get('/api/dogs')
+            //     .then(response => {
+            //         console.log(response);
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //     });
+
+            //    TODO:remove
+            // axios.put('api/dogs/1?height=updatedHeight')
+            //     .then(response => {
+            //         console.log(response);
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //     });
     }
 
     handleCategorySearch(value) {
@@ -135,7 +132,7 @@ class TeamList extends Component {
                     this.getTeamList().map(member => {
                         return (
                             <div className="col-sm-3" key={ member.name }>
-                                <MemberBlock
+                                <MemberListItem
                                     name={ member.name }
                                     department={ member.department }
                                     image={ member.image }

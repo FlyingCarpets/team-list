@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const MemberBlock = ({ image, name, department, link }) => (
+const MemberListItem = ({ image, name, department, link }) => (
     <div>
         <Link to={ `/member/${link}` }>
             <img
@@ -16,11 +16,11 @@ const MemberBlock = ({ image, name, department, link }) => (
     </div>
 );
 
-MemberBlock.propTypes = {
+MemberListItem.propTypes = {
     image: PropTypes.string,
     name: PropTypes.string,
     department: PropTypes.string,
     link: PropTypes.string,
 };
 
-export default MemberBlock;
+export default MemberListItem;
