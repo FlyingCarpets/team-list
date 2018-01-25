@@ -8,24 +8,20 @@ import PageNotFound from './containers/PageNotFound/PageNotFound';
 
 import './assets/scss/main.scss';
 
-class App extends Component {
-    render() {
-        return (
-            <div>
-                <header>
-                    <Header />
-                </header>
-                <main>
-                    <Switch>
-                        <Route exact path='/' component={ TeamList }/>
-                        <Route path={ `/member/:name` } component={ MemberInner } />
-                        <Route component={ PageNotFound }/>
-                    </Switch>
-                </main>
-                <footer>Footer component</footer>
-            </div>
-        );
-    }
-}
+const App = () => (
+    <div>
+        <header>
+            <Header />
+        </header>
+        <main>
+            <Switch>
+                <Route exact path='/' component={ TeamList } />
+                <Route path={ `/member/:name` } component={ MemberInner } />
+                <Route component={ PageNotFound } />
+            </Switch>
+        </main>
+        <footer>Footer component</footer>
+    </div>
+);
 
 export default App;
