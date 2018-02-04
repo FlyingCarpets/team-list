@@ -59,10 +59,12 @@ class MemberInner extends Component {
         const {
             member: {
                 link,
+                name,
+                department,
             },
         } = this.state;
 
-        axios.put(`/api/member/${link}?name=aaa`)
+        axios.put(`/api/member/${link}?name=${name}&department=${department}`)
             .then(({ data }) => {
                 this.setState({
                     member: data,

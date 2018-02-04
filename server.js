@@ -27,17 +27,10 @@ app.get('/api/member/:name', (req, res) => {
 
 app.put('/api/member/:name', (req, res) => {
     const name = req.params.name;
-    console.log(req.query);
 
-    // TODO: fix member updates
-    Member.findOne({ link: name }, (err, member) => {
-        const memberUpdates = Object.assign(member, req.query);
-        res.send(memberUpdates);
+    Member.findOneAndUpdate({ link: name }, { name: req.query.name, department: req.query.department }, { new: true }, (err, member) => {
+        res.send(member);
     })
-
-    // Member.findOneAndUpdate({ link: name }, { name: req.query.name }, (err, member) => {
-    //     res.send(member);
-    // })
 });
 
 // Without mongodb:

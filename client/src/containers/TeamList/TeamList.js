@@ -34,24 +34,6 @@ class TeamList extends Component {
             .catch(error => {
                 console.log(error);
             });
-
-            // TODO: remove
-            // axios.get('/api/dogs')
-            //     .then(response => {
-            //         console.log(response);
-            //     })
-            //     .catch(error => {
-            //         console.log(error);
-            //     });
-
-            //    TODO:remove
-            // axios.put('api/dogs/1?height=updatedHeight')
-            //     .then(response => {
-            //         console.log(response);
-            //     })
-            //     .catch(error => {
-            //         console.log(error);
-            //     });
     }
 
     handleCategorySearch(value) {
